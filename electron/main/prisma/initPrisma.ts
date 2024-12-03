@@ -11,10 +11,10 @@ const dbPath = electronIsDev ? 'sqllite.db' : join(process.resourcesPath, 'datab
 export const prisma =
   globalForPrisma.prisma ||
   new prismaClient.PrismaClient({
-    datasources: {
-      db: {
-        url: `file:sqllite.db`,
-        // url: `file:${dbPath}`,
-      },
-    },
+    // datasources: {
+    //   db: {
+    //     url: `file:sqllite.db`,
+    //     // url: `file:${dbPath}`,
+    //   },
+    // },
   });

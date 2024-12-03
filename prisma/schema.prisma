@@ -5,13 +5,13 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider      = "prisma-client-js"
-  binaryTargets = ["native", "darwin-arm64"]
+  provider = "prisma-client-js"
+  // binaryTargets = ["native", "darwin-arm64"]
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./sqllite.db"
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
 model Robot {
@@ -74,7 +74,7 @@ model Bills {
   /// 机器人id
   robotId       Int      @map("robot_id")
   /// 群组id
-  groupId       String   @map("group_id")
+  groupId       Int      @map("group_id")
   /// 记账指令
   mathStr       String   @map("math_str")
   /// 记账金额
@@ -92,7 +92,7 @@ model BillsHistory {
   /// 机器人id
   robotId        Int      @map("robot_id")
   /// 群组id
-  groupId        String   @map("group_id")
+  groupId        Int      @map("group_id")
   /// 记账指令
   mathStr        String   @map("math_str")
   /// 记账金额

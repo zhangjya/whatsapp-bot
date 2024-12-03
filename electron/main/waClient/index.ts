@@ -43,7 +43,7 @@ const _replyCheHui = async (message: Message, group: Group) => {
 };
 
 const _replyJieSuan = async (message: Message, group: Group) => {
-  const billingList = await getBillList(group.groupId, group.robotId);
+  const billingList = await getBillList(group.id, group.robotId);
   if (billingList.length === 0) {
     message.reply('请先输入金额');
     return;
@@ -57,7 +57,7 @@ const _replyJieSuan = async (message: Message, group: Group) => {
 
 const _replyQingZhang = async (message: Message, group: Group) => {
   // 1. 清除群组的记账记录
-  await clearBilling(group.groupId, group.robotId);
+  await clearBilling(group.id, group.robotId);
   // 2. 重置群的余额
   await updateGroupTotalAmout(group.id, 0);
   // // 3. 卡商余额减去被清账的总额
@@ -100,7 +100,7 @@ const _matchMathMessage = async (message: Message, group: Group) => {
   // 构建新的账单记录
   // 增加新的账单记录
   await addBillItem({
-    groupId: group.groupId,
+    groupId: group.id,
     robotId: group.robotId,
     mathStr: mathStr,
     amount: mathStrAmout,
@@ -176,8 +176,9 @@ const analysisWAMessage = async (message: Message, chat: Chat, robotId: number) 
 };
 
 const _syncGroupList = async (robotId: number, chats: WAWebJS.Chat[]) => {
+  console.log('🚀 ~ const_syncGroupList= ~ chats:', chats);
   const _groups = chats
-    .filter((chat) => chat.isGroup)
+    // .filter((chat) => chat.isGroup)
     .map((item) => ({
       uniqueId: `${robotId}_${item.id.user}`,
       robotId: robotId,
@@ -211,7 +212,7 @@ const _initWaClient = async (robotId: number, webContents: Electron.WebContents)
   //       args: ['--no-sandbox'],
   //     };
   //   }
-  const wwebVersion = '2.2412.50';
+  // const wwebVersion = '2.2412.50';
 
   const rootDir = app.getAppPath();
   const authDir = path.join(rootDir, '../', '.wwebjs_auth');
@@ -222,11 +223,11 @@ const _initWaClient = async (robotId: number, webContents: Electron.WebContents)
       dataPath: authDir,
     }),
     puppeteer: puppeteerOptions,
-    webVersion: wwebVersion,
-    webVersionCache: {
-      type: 'remote',
-      remotePath: `https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/${wwebVersion}.html`,
-    },
+    // webVersion: wwebVersion,
+    // webVersionCache: {
+    //   type: 'remote',
+    //   remotePath: `https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/${wwebVersion}.html`,
+    // },
   });
 
   waClientMap.set(id, client);
@@ -308,9 +309,10 @@ const _initWaClient = async (robotId: number, webContents: Electron.WebContents)
 
   client.on('message', async (message: Message) => {
     const chat = await message.getChat();
-    if (chat.isGroup) {
-      analysisWAMessage(message, chat, id);
-    }
+    analysisWAMessage(message, chat, id);
+    // if (chat.isGroup) {
+    //   analysisWAMessage(message, chat, id);
+    // }
   });
 
   try {

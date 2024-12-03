@@ -3,7 +3,7 @@ import prisma from '.';
 export function getLastBilling(groupNumId: number) {
   return prisma.bills.findFirst({
     where: {
-      id: groupNumId,
+      groupId: groupNumId,
     },
     orderBy: {
       createdAt: 'desc',
@@ -11,7 +11,7 @@ export function getLastBilling(groupNumId: number) {
   });
 }
 
-export function getBillList(groupId: string, robotId: number) {
+export function getBillList(groupId: number, robotId: number) {
   return prisma.bills.findMany({
     where: {
       groupId,
@@ -24,7 +24,7 @@ export function getBillList(groupId: string, robotId: number) {
 }
 
 export function addBillItem(data: {
-  groupId: string;
+  groupId: number;
   robotId: number;
   mathStr: string;
   amount: number;
@@ -46,7 +46,7 @@ export function delBillItems(id: number) {
 
 // 清除群组的记账记录
 // 将当前群里的数据转移到账单历史表中
-export async function clearBilling(groupId: string, robotId: number) {
+export async function clearBilling(groupId: number, robotId: number) {
   const billings = await getBillList(groupId, robotId);
   // 批量转移到历史表
   const billingBatchNo = String(Date.now()); // 批次号

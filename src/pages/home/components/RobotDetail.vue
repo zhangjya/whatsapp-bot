@@ -3,6 +3,7 @@
 import dayjs from 'dayjs';
 import { onMounted, onUnmounted, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
+import { Notification } from '@arco-design/web-vue';
 
 import { getGroupList, groupChangeEnable } from '/@/api/groupApi';
 import { deleteRobot, destoryRobot, logoutRobot, startRobotById } from '/@/api/robotApi';
@@ -22,6 +23,8 @@ const starting = ref(false);
 
 onMounted(() => {
     window.ipcRenderer.on('robot-info-change', (e, data: any) => {
+        console.log('🚀 ~ window.ipcRenderer.on ~ robot-info-change e:', e);
+        console.log('🚀 ~ window.ipcRenderer.on ~ robot-info-change data:', data);
         robotStore.updateRobotInfo(data);
     });
 });
@@ -93,6 +96,13 @@ const handleDestoryRobot = async () => {
     }
 };
 
+const handleRefresh = () => {
+    getGroupListByRobot();
+    Notification.success({
+        content: '刷新成功',
+    })
+};
+
 const handleChangeSwitch = async (_val: boolean, id: number) => {
     await groupChangeEnable(id, _val);
     await getGroupListByRobot();
@@ -132,17 +142,24 @@ const formatDate = (date: any) => {
             <RobotWhiteList :id="robotInfo.id" />
             <!-- 操作按钮区域 -->
             <div class="flex-between">
-                <a-space align="end">
+                <a-space align="end" size="large">
                     <!-- 打开客户端的按钮 -->
-                    <a-tooltip content="启动机器人客户端">
+                    <a-tooltip content="启动机器人客户端，请勿重复启动">
                         <a-button @click="handleStartRobot" type="primary" :loading="starting">
                             <template #icon>
                                 <icon-robot></icon-robot>
                             </template>
                         </a-button>
                     </a-tooltip>
+                    <a-tooltip content="刷新">
+                        <a-button @click="handleRefresh" type="outline">
+                            <template #icon>
+                                <icon-refresh></icon-refresh>
+                            </template>
+                        </a-button>
+                    </a-tooltip>
                 </a-space>
-                <a-space align="end">
+                <a-space align="end" size="large">
                     <a-tooltip content="删除机器人" v-if="robotInfo.status === 0" position="left">
                         <a-button @click="handleDeleteRobot" type="primary" status="danger">
                             <template #icon>

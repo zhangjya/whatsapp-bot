@@ -10,6 +10,8 @@ export const useRobotStore = defineStore('robotStore', () => {
   const selectedRobotId = ref<number | undefined>();
 
   const robotInfo = computed(() => {
+    console.log('🚀 ~ robotInfo ~ computed list:', robotList.value);
+    console.log('🚀 ~ robotInfo ~ computed selectedRobotId:', selectedRobotId.value);
     if (selectedRobotId.value) {
       return robotList.value.find((item) => item.id === selectedRobotId.value);
     }
@@ -26,11 +28,20 @@ export const useRobotStore = defineStore('robotStore', () => {
    * @param data
    */
   const updateRobotInfo = (data: ROBOT.IItem) => {
-    const index = robotList.value.findIndex((item) => item.id === data.id);
-    if (index !== -1) {
-      // 对象合并
-      Object.assign(robotList.value[index], data);
-    }
+    robotList.value.forEach((item) => {
+      if (item.id === data.id) {
+        item.mobile = data.mobile || item.mobile;
+        item.name = data.name || item.name;
+        item.nickName = data.nickName || item.nickName;
+        item.status = data.status || item.status;
+      }
+    })
+    // const index = robotList.value.findIndex((item) => item.id === data.id);
+    // if (index !== -1) {
+    //   // 对象合并
+    //   // Object.assign(robotList.value[index], data);
+    //   robotList.value[index] = { ...robotList.value[index], ...data };
+    // }
   };
 
   return {
