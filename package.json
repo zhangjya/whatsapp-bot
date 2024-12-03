@@ -20,7 +20,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@arco-design/web-vue": "^2.56.2",
+    "@arco-design/web-vue": "2.56.3",
     "@prisma/client": "5.21.0",
     "dayjs": "^1.11.13",
     "mathjs": "^13.2.0",
@@ -46,7 +46,7 @@
     "vite": "^5.1.5",
     "vite-plugin-electron": "^0.28.4",
     "vite-plugin-electron-renderer": "^0.14.5",
-    "vue-tsc": "^2.0.6"
+    "vue-tsc": "2.0.6"
   },
   "debug": {
     "env": {
